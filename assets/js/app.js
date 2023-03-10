@@ -1,3 +1,4 @@
+//
 let myPage = 1;
 const myAppElement = document.getElementById("myApp");
 
@@ -5,7 +6,7 @@ const myAppElement = document.getElementById("myApp");
 loadingScreen();
 setUpShowAllButton();
 setupSearchForm();
-fetchOneCharacter(5195);
+fetchOneCharacter(4703);
 
 function fetchOneCharacter(myId) {
   let URI = `https://api.disneyapi.dev/characters/${myId}`;
@@ -25,7 +26,9 @@ function fetchOneCharacter(myId) {
       //console.log(data);
       showCharacter(data);
     })
-    .catch();
+    .catch((err) => {
+      console.error(err.message);
+    });
 }
 
 function showCharacter(myData) {
@@ -70,6 +73,7 @@ function setupSearchForm() {
 
     if (myValue) {
       console.log(" vi har string " + myValue);
+      fetchSearch(myValue);
     } else {
       alert("indtast i søge felt.");
     }
@@ -78,6 +82,101 @@ function setupSearchForm() {
 
 function fetchCaracterPage() {
   console.log("fetchCaracterPage");
+}
+
+function fetchSearch(myName) {
+  let URI = `https://api.disneyapi.dev/character?name=${myName}`;
+
+  fetch(URI)
+    .then((response) => {
+      //console.log(response);
+
+      if (response.ok) {
+        return response.json();
+      } else {
+        alert("api error du får lige mickey mouse");
+        fetchOneCharacter(4703);
+      }
+    })
+    .then((data) => {
+      console.log(data);
+      showSearch(data.data);
+    })
+    .catch((err) => {
+      console.error(err.message);
+    });
+}
+
+function showSearch(myData) {
+  let myHTML = "";
+
+  myData.map((myCharacter) => {
+    myHTML += `<h3>${myCharacter.name}</h3><img src="${myCharacter.imageUrl}"></br>`;
+  });
+
+  myAppElement.innerHTML = myHTML;
+}
+
+function fetchAllCharacters() {
+  let URI = `https://api.disneyapi.dev/characters?page=${myPage}`;
+
+  fetch(URI)
+    .then((response) => {
+      //console.log(response);
+
+      if (response.ok) {
+        return response.json();
+      } else {
+        alert("api error du får lige mickey mouse");
+        fetchOneCharacter(4703);
+      }
+    })
+    .then((data) => {
+      console.log(data);
+
+      showAll(data.data);
+    })
+    .catch((err) => {
+      console.error(err.message);
+    });
+}
+
+function showAll(myData) {
+  myAppElement.innerHTML = "";
+  makePageButtons();
+
+  let myHTML = "";
+
+  myData.map((myCharacter) => {
+    myHTML += `<h3>${myCharacter.name}</h3><img src="${myCharacter.imageUrl}"></br>`;
+  });
+
+  myAppElement.innerHTML += myHTML;
+  makePageButtons();
+}
+
+function makePageButtons() {
+  let prevButton = document.createElement("button");
+  prevButton.innerText = "prev";
+  prevButton.addEventListener("click", (e) => {
+    myPage--;
+    if (myPage < 1) {
+      myPage = 1;
+    }
+    fetchAllCharacters();
+  });
+
+  let nextButton = document.createElement("button");
+  nextButton.innerText = "next";
+  nextButton.addEventListener("click", (e) => {
+    myPage++;
+    if (myPage >= 149) {
+      myPage = 149;
+    }
+    fetchAllCharacters();
+  });
+  myAppElement.appendChild(prevButton);
+  myAppElement.appendChild(nextButton);
 }
 
 /*↑↑↑↑↑↑↑ Bo's code-along ↑↑↑↑↑↑↑ */
