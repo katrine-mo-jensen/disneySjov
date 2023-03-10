@@ -116,6 +116,17 @@ function showSearch(myData) {
 
   myAppElement.innerHTML = myHTML;
 }
+// Et af mine forsøg for på at lave lave 'cards' så jeg kunne style
+/* function buildCard() {
+  let cardViewer = document.createElement("article");
+  myAppElement.appendChild(buildCard);
+  showSearch.appendChild(cardViewer);
+} */
+
+function buildCard() {
+  let cardViewer = document.createElement("article");
+  myApp.appendChild(myArticle);
+}
 
 function fetchAllCharacters() {
   let URI = `https://api.disneyapi.dev/characters?page=${myPage}`;
